@@ -3,21 +3,23 @@
 Plugin Name: WPC Smart Quick View for WooCommerce
 Plugin URI: https://wpclever.net/
 Description: WPC Smart Quick View allows users to get a quick look of products without opening the product page.
-Version: 4.1.2
+Version: 4.1.4
 Author: WPClever
 Author URI: https://wpclever.net
 Text Domain: woo-smart-quick-view
 Domain Path: /languages/
 Requires Plugins: woocommerce
 Requires at least: 4.0
-Tested up to: 6.6
+Tested up to: 6.7
 WC requires at least: 3.0
-WC tested up to: 9.2
+WC tested up to: 9.4
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 */
 
 defined( 'ABSPATH' ) || exit;
 
-! defined( 'WOOSQ_VERSION' ) && define( 'WOOSQ_VERSION', '4.1.2' );
+! defined( 'WOOSQ_VERSION' ) && define( 'WOOSQ_VERSION', '4.1.4' );
 ! defined( 'WOOSQ_LITE' ) && define( 'WOOSQ_LITE', __FILE__ );
 ! defined( 'WOOSQ_FILE' ) && define( 'WOOSQ_FILE', __FILE__ );
 ! defined( 'WOOSQ_URI' ) && define( 'WOOSQ_URI', plugin_dir_url( __FILE__ ) );
@@ -36,9 +38,6 @@ if ( ! function_exists( 'woosq_init' ) ) {
 	add_action( 'plugins_loaded', 'woosq_init', 11 );
 
 	function woosq_init() {
-		// load text-domain
-		load_plugin_textdomain( 'woo-smart-quick-view', false, basename( __DIR__ ) . '/languages/' );
-
 		if ( ! function_exists( 'WC' ) || ! version_compare( WC()->version, '3.0', '>=' ) ) {
 			add_action( 'admin_notices', 'woosq_notice_wc' );
 
@@ -62,29 +61,6 @@ if ( ! function_exists( 'woosq_init' ) ) {
 				}
 
 				function __construct() {
-					self::$settings       = (array) get_option( 'woosq_settings', [] );
-					self::$localization   = (array) get_option( 'woosq_localization', [] );
-					self::$fields         = apply_filters( 'woosq_fields', [
-						'title'       => esc_html__( 'Title', 'woo-smart-quick-view' ),
-						'rating'      => esc_html__( 'Rating', 'woo-smart-quick-view' ),
-						'price'       => esc_html__( 'Price', 'woo-smart-quick-view' ),
-						'excerpt'     => esc_html__( 'Short description', 'woo-smart-quick-view' ),
-						'add_to_cart' => esc_html__( 'Add to cart', 'woo-smart-quick-view' ),
-						'meta'        => esc_html__( 'Meta', 'woo-smart-quick-view' ),
-						'description' => esc_html__( 'Description', 'woo-smart-quick-view' ),
-						'weight'      => esc_html__( 'Weight', 'woo-smart-quick-view' ),
-						'dimensions'  => esc_html__( 'Dimensions', 'woo-smart-quick-view' ),
-						'additional'  => esc_html__( 'Additional information', 'woo-smart-quick-view' ),
-					] );
-					self::$default_fields = apply_filters( 'woosq_default_fields', [
-						'title',
-						'rating',
-						'price',
-						'excerpt',
-						'add_to_cart',
-						'meta'
-					] );
-
 					// init
 					add_action( 'init', [ $this, 'init' ] );
 
@@ -141,11 +117,41 @@ if ( ! function_exists( 'woosq_init' ) ) {
 					// wpml
 					add_filter( 'wcml_multi_currency_ajax_actions', [ $this, 'wcml_multi_currency' ], 99 );
 
+					if ( function_exists( 'wpml_loaded' ) ) {
+						add_filter( 'woosq_thumbnails', [ $this, 'wpml_thumbnails' ], 99 );
+					}
+
 					// WPC Smart Messages
 					add_filter( 'wpcsm_locations', [ $this, 'wpcsm_locations' ] );
 				}
 
 				function init() {
+					// load text-domain
+					load_plugin_textdomain( 'woo-smart-quick-view', false, basename( WOOSQ_DIR ) . '/languages/' );
+
+					self::$settings       = (array) get_option( 'woosq_settings', [] );
+					self::$localization   = (array) get_option( 'woosq_localization', [] );
+					self::$fields         = apply_filters( 'woosq_fields', [
+						'title'       => esc_html__( 'Title', 'woo-smart-quick-view' ),
+						'rating'      => esc_html__( 'Rating', 'woo-smart-quick-view' ),
+						'price'       => esc_html__( 'Price', 'woo-smart-quick-view' ),
+						'excerpt'     => esc_html__( 'Short description', 'woo-smart-quick-view' ),
+						'add_to_cart' => esc_html__( 'Add to cart', 'woo-smart-quick-view' ),
+						'meta'        => esc_html__( 'Meta', 'woo-smart-quick-view' ),
+						'description' => esc_html__( 'Description', 'woo-smart-quick-view' ),
+						'weight'      => esc_html__( 'Weight', 'woo-smart-quick-view' ),
+						'dimensions'  => esc_html__( 'Dimensions', 'woo-smart-quick-view' ),
+						'additional'  => esc_html__( 'Additional information', 'woo-smart-quick-view' ),
+					] );
+					self::$default_fields = apply_filters( 'woosq_default_fields', [
+						'title',
+						'rating',
+						'price',
+						'excerpt',
+						'add_to_cart',
+						'meta'
+					] );
+
 					// image size
 					add_image_size( 'woosq', 460, 460, true );
 
@@ -285,8 +291,7 @@ if ( ! function_exists( 'woosq_init' ) ) {
 							}
 						}
 
-						$thumb_ids = apply_filters( 'woosq_thumbnails', $thumb_ids, $product );
-						$thumb_ids = array_unique( $thumb_ids );
+						$thumb_ids = apply_filters( 'woosq_thumbnails', array_unique( $thumb_ids ), $product );
 
 						if ( self::get_setting( 'view', 'popup' ) === 'popup' ) {
 							echo '<div id="woosq-popup" class="woosq-popup mfp-with-anim ' . esc_attr( self::get_setting( 'content_view_details_button', 'no' ) === 'yes' ? 'view-details' : '' ) . '">';
@@ -1345,6 +1350,12 @@ if ( ! function_exists( 'woosq_init' ) ) {
 					$ajax_actions[] = 'woosq_quickview';
 
 					return $ajax_actions;
+				}
+
+				function wpml_thumbnails( $thumbnails ) {
+					return array_map( function ( $thumb_id ) {
+						return apply_filters( 'wpml_object_id', $thumb_id, 'attachment', true );
+					}, $thumbnails );
 				}
 
 				function save_post( $post_id, $post ) {

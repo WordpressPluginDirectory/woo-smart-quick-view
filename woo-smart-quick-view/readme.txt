@@ -3,9 +3,9 @@ Contributors: wpclever
 Donate link: https://wpclever.net
 Tags: woocommerce, wpc, quickview, quick-view
 Requires at least: 4.0
-Tested up to: 6.6
-Version: 4.1.2
-Stable tag: 4.1.2
+Tested up to: 6.7
+Version: 4.1.4
+Stable tag: 4.1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,6 +87,12 @@ Example:
 });`
 
 == Changelog ==
+
+= 4.1.4 =
+* Updated: Compatible with WP 6.7 & Woo 9.4
+
+= 4.1.3 =
+* Updated: Compatible with WPML Media Translation
 
 = 4.1.2 =
 * Updated: Temporary disabled the Fancybox effect due to security reason
