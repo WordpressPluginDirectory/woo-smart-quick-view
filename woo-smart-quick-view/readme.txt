@@ -2,9 +2,8 @@
 Contributors: wpclever
 Donate link: https://wpclever.net
 Tags: woocommerce, wpc, quickview, quick-view
-Tested up to: 6.8
-Version: 4.2.6
-Stable tag: 4.2.6
+Tested up to: 7.1
+Stable tag: 4.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +85,46 @@ Example:
 });`
 
 == Changelog ==
+
+= 4.4.0 =
+* Updated: New UI for the Settings page
+* Added: Filter hook 'woosq_disable_frontend_scripts'
+
+= 4.3.6 =
+* Updated: Optimized the code
+* Updated: Compatible with WP 7.1 & Woo 11.1
+
+= 4.3.5 =
+* Fixed: Minor CSS/JS issue for the backend
+
+= 4.3.4 =
+* Updated: Optimized the code
+* Updated: Compatible with WP 7.0 & Woo 10.9
+
+= 4.3.3 =
+* Updated: Optimized the code
+* Updated: Compatible with WP 7.0 & Woo 10.8
+
+= 4.3.2 =
+* Fixed: Minor CSS/JS issue for the backend
+* Updated: Compatible with WP 6.9 & Woo 10.7
+
+= 4.3.1 =
+* Updated: Optimized the code
+
+= 4.3.0 =
+* Fixed: Minor CSS/JS issue for the backend
+* Updated: Compatible with WP 6.9 & Woo 10.6
+
+= 4.2.9 =
+* Updated: Compatible with WP 6.9 & Woo 10.4
+
+= 4.2.8 =
+* Updated: Optimized the code
+
+= 4.2.7 =
+* Added: Import/export settings
+* Updated: Compatible with WP 6.8 & Woo 10.3
 
 = 4.2.6 =
 * Updated: Optimized the code
